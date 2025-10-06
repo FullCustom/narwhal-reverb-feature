@@ -126,7 +126,7 @@
     async function loadReverbListings() {
       const apiUrl = 'https://api.reverb.com/api/listings?query=narwhal%20industries&per_page=6&sort_by=created_at&sort_order=desc';
       const token = '59ff7211ac382205accabbbdf9ff28935b35cb7580b343bf1cebceeaf3e6d47f';  // Your Reverb Personal Access Token
-      const awinMid = 67144;  // Correct Reverb merchant ID on Awin
+      const awinMid = 67144;  // Reverb merchant ID
       const awinAffId = 2579497;  // Your publisher ID
       const awinBase = `https://www.awin1.com/cread.php?awinmid=${awinMid}&awinaffid=${awinAffId}&ued=https%3A%2F%2Freverb.com%2Fitem%2F`;
       const grid = document.getElementById('reverb-listings-grid');
@@ -174,12 +174,19 @@
         if (listings.length > 0) {
           const renderedHtml = listings.map(listing => {
             const affLink = `${awinBase}${listing.id}`;
-            if (listing.id === listings[0].id) {  // Log first link for testing
-              console.log('Generated Awin link for first listing:', affLink);
-            }
+            console.log('Listing details:', { id: listing.id, title: listing.title, photos: listing.photos || 'No photos available' });
+            console.log('Generated Awin link:', affLink);
+            // Try all possible image fields before fallback
+            const imageUrl = listing.photos?.[0]?.medium_url || 
+                            listing.photos?.[0]?.full_url || 
+                            listing.photos?.[0]?.thumbnail_url || 
+                            listing.photos?.[0]?.large_url || 
+                            listing.photos?.[0]?.supersize_url || 
+                            '/images/narwhal-pedal.jpg' || // Host on narwhalindustries.net
+                            'https://placehold.co/200x150?text=Narwhal+Pedal';
             return `
               <div class="reverb-card">
-                <img src="${listing.photos?.[0]?.medium_url || 'https://via.placeholder.com/200x150?text=Narwhal+Pedal'}" alt="${listing.title}" loading="lazy">
+                <img src="${imageUrl}" alt="${listing.title}" loading="lazy">
                 <h3>${listing.title}</h3>
                 <p class="price">$${listing.price?.amount || 'Contact Seller'}</p>
                 <p class="shop">From: ${listing.shop?.name || 'Reverb Seller'}</p>
