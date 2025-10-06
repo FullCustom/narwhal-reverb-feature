@@ -119,38 +119,83 @@
     <div id="reverb-listings-grid" class="reverb-grid">
       <p>Loading Narwhal Industries gear...</p>
     </div>
-    <p><a id="view-all-link" href="https://www.awin1.com/cread.php?awinmid=2956&awinaffid=2579497&clickref=&p=https%3A%2F%2Freverb.com%2Fmarketplace%3Fquery%3Doverdrive%26product_type%3Deffects-and-pedals%26price_max%3D100%26price_min%3D50" rel="sponsored noopener" target="_blank">Browse Overdrive Pedals on Reverb &gt;</a></p>
+    <p><a id="view-all-link" href="https://www.awin1.com/cread.php?awinmid=67144&awinaffid=2579497&ued=https%3A%2F%2Freverb.com%2Fmarketplace%3Fquery%3Doverdrive%26product_type%3Deffects-and-pedals%26price_max%3D100%26price_min%3D50" rel="sponsored noopener" target="_blank">Browse Overdrive Pedals on Reverb &gt;</a></p>
   </section>
 
   <script>
     async function loadReverbListings() {
-      const apiUrl = 'https://api.reverb.com/api/listings/search?query=narwhal%20industries&per_page=6&sort=created_at|desc';
-      const awinBase = 'https://www.awin1.com/cread.php?awinmid=2956&awinaffid=2579497&clickref=&p=https%3A%2F%2Freverb.com%2Fitem%2F';
+      const apiUrl = 'https://api.reverb.com/api/listings?query=narwhal%20industries&per_page=6&sort_by=created_at&sort_order=desc';
+      const token = '59ff7211ac382205accabbbdf9ff28935b35cb7580b343bf1cebceeaf3e6d47f';  // Your Reverb Personal Access Token
+      const awinMid = 67144;  // Correct Reverb merchant ID on Awin
+      const awinAffId = 2579497;  // Your publisher ID
+      const awinBase = `https://www.awin1.com/cread.php?awinmid=${awinMid}&awinaffid=${awinAffId}&ued=https%3A%2F%2Freverb.com%2Fitem%2F`;
       const grid = document.getElementById('reverb-listings-grid');
 
-      try {
-        const response = await fetch(apiUrl);
-        if (!response.ok) {
-          throw new Error(`API error: ${response.status}`);
-        }
-        const data = await response.json();
+      const headers = {
+        'Accept': 'application/hal+json, application/json',
+        'Content-Type': 'application/hal+json',
+        'Accept-Version': '3.0',
+        'Authorization': `Bearer ${token}`
+      };
 
-        if (data.total && data.total > 0 && data.listings && data.listings.length > 0) {
-          grid.innerHTML = data.listings.map(listing => `
-            <div class="reverb-card">
-              <img src="${listing.photos?.[0]?.medium_url || 'https://via.placeholder.com/200x150?text=Narwhal+Pedal'}" alt="${listing.title}" loading="lazy">
-              <h3>${listing.title}</h3>
-              <p class="price">$${listing.price?.amount || 'Contact Seller'}</p>
-              <p class="shop">From: ${listing.shop?.name || 'Reverb Seller'}</p>
-              <a href="${awinBase}${listing.id}" rel="sponsored noopener" target="_blank" class="buy-btn">Buy Now on Reverb</a>
-            </div>
-          `).join('');
+      // Function to fetch with optional proxy (for CORS during testing)
+      async function fetchWithProxy(url, useProxy = false) {
+        let fetchUrl = url;
+        if (useProxy) {
+          console.log('Using CORS proxy...');
+          fetchUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
+        }
+        return await fetch(fetchUrl, { headers });
+      }
+
+      try {
+        console.log('Attempting API fetch with token...', { url: apiUrl });
+        let response = await fetchWithProxy(apiUrl, false);
+
+        // Fallback to proxy if CORS (status 0)
+        if (!response.ok && (response.status === 0 || response.type === 'opaque')) {
+          console.log('Direct fetch failed (CORS). Trying proxy...');
+          response = await fetchWithProxy(apiUrl, true);
+        }
+
+        console.log(`API Response Status: ${response.status} ${response.statusText}`);
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error(`API error details: Status ${response.status}, Body: ${errorText.substring(0, 200)}...`);
+          throw new Error(`API error: ${response.status} ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        console.log('API Data received:', { total: data.total || data._embedded?.listings?.length, listingsCount: data.listings?.length || data._embedded?.listings?.length });
+
+        // Handle HAL-embedded response format
+        const listings = data.listings || (data._embedded && data._embedded.listings) || [];
+        if (listings.length > 0) {
+          const renderedHtml = listings.map(listing => {
+            const affLink = `${awinBase}${listing.id}`;
+            if (listing.id === listings[0].id) {  // Log first link for testing
+              console.log('Generated Awin link for first listing:', affLink);
+            }
+            return `
+              <div class="reverb-card">
+                <img src="${listing.photos?.[0]?.medium_url || 'https://via.placeholder.com/200x150?text=Narwhal+Pedal'}" alt="${listing.title}" loading="lazy">
+                <h3>${listing.title}</h3>
+                <p class="price">$${listing.price?.amount || 'Contact Seller'}</p>
+                <p class="shop">From: ${listing.shop?.name || 'Reverb Seller'}</p>
+                <a href="${affLink}" rel="sponsored noopener" target="_blank" class="buy-btn">Buy Now on Reverb</a>
+              </div>
+            `;
+          }).join('');
+          grid.innerHTML = renderedHtml;
+          console.log('Listings rendered successfully');
         } else {
-          grid.innerHTML = '<p>No current Narwhal Industries listings available—<a href="https://www.awin1.com/cread.php?awinmid=2956&awinaffid=2579497&clickref=&p=https%3A%2F%2Freverb.com%2Fmarketplace%3Fquery%3Doverdrive%26product_type%3Deffects-and-pedals%26price_max%3D100%26price_min%3D50">explore overdrive pedals</a> to find similar gear!</p>';
+          console.log('No listings found');
+          grid.innerHTML = '<p>No current Narwhal Industries listings available—<a href="https://www.awin1.com/cread.php?awinmid=67144&awinaffid=2579497&ued=https%3A%2F%2Freverb.com%2Fmarketplace%3Fquery%3Doverdrive%26product_type%3Deffects-and-pedals%26price_max%3D100%26price_min%3D50">explore overdrive pedals</a> to find similar gear!</p>';
         }
       } catch (error) {
         console.error('Reverb API fetch error:', error);
-        grid.innerHTML = `<p>Couldn't load listings. <a href="https://www.awin1.com/cread.php?awinmid=2956&awinaffid=2579497&clickref=&p=https%3A%2F%2Freverb.com%2Fmarketplace%3Fquery%3Doverdrive%26product_type%3Deffects-and-pedals%26price_max%3D100%26price_min%3D50">Browse overdrive pedals on Reverb</a> to find similar gear!</p>`;
+        grid.innerHTML = `<p>Couldn't load listings (check console/token). <a href="https://www.awin1.com/cread.php?awinmid=67144&awinaffid=2579497&ued=https%3A%2F%2Freverb.com%2Fmarketplace%3Fquery%3Doverdrive%26product_type%3Deffects-and-pedals%26price_max%3D100%26price_min%3D50">Browse overdrive pedals on Reverb</a> to find similar gear!</p>`;
       }
     }
 
