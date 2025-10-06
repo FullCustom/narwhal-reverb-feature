@@ -64,7 +64,7 @@
     }
 
     .reverb-card img {
-      width: 100%;
+      width: 150px;
       height: 150px;
       object-fit: cover;
       border-radius: 4px;
@@ -182,7 +182,7 @@
                             listing.photos?.[0]?.thumbnail_url || 
                             listing.photos?.[0]?.large_url || 
                             listing.photos?.[0]?.supersize_url || 
-                            '/_img/narwhal-pedal.png' || // Local fallback (host on narwhalindustries.net)
+                            '/_img/narwhal.jpg' || // Local fallback (host on narwhalindustries.net)
                             'https://placehold.co/200x150?text=Narwhal+Pedal';
             return `
               <div class="reverb-card">
