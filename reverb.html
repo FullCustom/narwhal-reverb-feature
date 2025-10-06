@@ -176,13 +176,13 @@
             const affLink = `${awinBase}${listing.id}`;
             console.log('Listing details:', { id: listing.id, title: listing.title, photos: listing.photos || 'No photos available' });
             console.log('Generated Awin link:', affLink);
-            // Try all possible image fields before fallback
+            // Try all possible image fields before local fallback
             const imageUrl = listing.photos?.[0]?.medium_url || 
                             listing.photos?.[0]?.full_url || 
                             listing.photos?.[0]?.thumbnail_url || 
                             listing.photos?.[0]?.large_url || 
                             listing.photos?.[0]?.supersize_url || 
-                            '/images/narwhal-pedal.jpg' || // Host on narwhalindustries.net
+                            '/_img/narwhal-pedal.png' || // Local fallback (host on narwhalindustries.net)
                             'https://placehold.co/200x150?text=Narwhal+Pedal';
             return `
               <div class="reverb-card">
