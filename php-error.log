@@ -1,0 +1,51 @@
+[06-Oct-2025 18:53:10 UTC] Failed to fetch Reverb API: Array
+(
+    [type] => 2
+    [message] => file_get_contents(https://api.reverb.com/api/listings?query=narwhal%20industries&amp;per_page=6&amp;sort_by=created_at&amp;sort_order=desc): Failed to open stream: No such file or directory
+    [file] => C:\Users\Tim Bench\Documents\repositories\nawhal-reverb-feature\reverb-proxy.php
+    [line] => 26
+)
+
+[06-Oct-2025 19:27:30 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function curl_init() in C:\Users\Tim Bench\Documents\repositories\nawhal-reverb-feature\reverb-proxy.php:29
+Stack trace:
+#0 {main}
+  thrown in C:\Users\Tim Bench\Documents\repositories\nawhal-reverb-feature\reverb-proxy.php on line 29
+[06-Oct-2025 19:27:38 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function curl_init() in C:\Users\Tim Bench\Documents\repositories\nawhal-reverb-feature\reverb-proxy.php:29
+Stack trace:
+#0 {main}
+  thrown in C:\Users\Tim Bench\Documents\repositories\nawhal-reverb-feature\reverb-proxy.php on line 29
+[06-Oct-2025 19:33:03 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function curl_init() in C:\Users\Tim Bench\Documents\repositories\nawhal-reverb-feature\reverb-proxy.php:29
+Stack trace:
+#0 {main}
+  thrown in C:\Users\Tim Bench\Documents\repositories\nawhal-reverb-feature\reverb-proxy.php on line 29
+[06-Oct-2025 19:50:03 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function curl_init() in C:\Users\Tim Bench\Documents\repositories\nawhal-reverb-feature\reverb-proxy.php:16
+Stack trace:
+#0 {main}
+  thrown in C:\Users\Tim Bench\Documents\repositories\nawhal-reverb-feature\reverb-proxy.php on line 16
+[06-Oct-2025 19:50:50 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function curl_init() in C:\Users\Tim Bench\Documents\repositories\nawhal-reverb-feature\reverb-proxy.php:16
+Stack trace:
+#0 {main}
+  thrown in C:\Users\Tim Bench\Documents\repositories\nawhal-reverb-feature\reverb-proxy.php on line 16
+[06-Oct-2025 19:50:54 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function curl_init() in C:\Users\Tim Bench\Documents\repositories\nawhal-reverb-feature\reverb-proxy.php:16
+Stack trace:
+#0 {main}
+  thrown in C:\Users\Tim Bench\Documents\repositories\nawhal-reverb-feature\reverb-proxy.php on line 16
+[06-Oct-2025 20:32:34 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function curl_init() in C:\Users\Tim Bench\Documents\repositories\nawhal-reverb-feature\reverb-proxy.php:16
+Stack trace:
+#0 {main}
+  thrown in C:\Users\Tim Bench\Documents\repositories\nawhal-reverb-feature\reverb-proxy.php on line 16
+[06-Oct-2025 20:37:13 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function curl_init() in C:\Users\Tim Bench\Documents\repositories\nawhal-reverb-feature\reverb-proxy.php:16
+Stack trace:
+#0 {main}
+  thrown in C:\Users\Tim Bench\Documents\repositories\nawhal-reverb-feature\reverb-proxy.php on line 16
+[06-Oct-2025 20:58:31 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function curl_init() in C:\Users\Tim Bench\Documents\repositories\nawhal-reverb-feature\reverb-proxy.php:16
+Stack trace:
+#0 {main}
+  thrown in C:\Users\Tim Bench\Documents\repositories\nawhal-reverb-feature\reverb-proxy.php on line 16
+[06-Oct-2025 21:13:43 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function curl_init() in C:\Users\Tim Bench\Documents\repositories\nawhal-reverb-feature\reverb-proxy.php:16
+Stack trace:
+#0 {main}
+  thrown in C:\Users\Tim Bench\Documents\repositories\nawhal-reverb-feature\reverb-proxy.php on line 16
+[06-Oct-2025 22:17:13 UTC] CURL Error: SSL certificate problem: unable to get local issuer certificate
+[06-Oct-2025 22:17:19 UTC] CURL Error: SSL certificate problem: unable to get local issuer certificate
+[06-Oct-2025 22:22:09 UTC] CURL Error: SSL certificate problem: unable to get local issuer certificate

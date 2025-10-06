@@ -124,66 +124,42 @@
 
   <script>
     async function loadReverbListings() {
-      const apiUrl = 'https://api.reverb.com/api/listings?query=narwhal%20industries&per_page=6&sort_by=created_at&sort_order=desc';
-      const token = '59ff7211ac382205accabbbdf9ff28935b35cb7580b343bf1cebceeaf3e6d47f';  // Your Reverb Personal Access Token
+      const apiUrl = 'http://localhost:8000/reverb-proxy.php'; // PHP built-in server endpoint
       const awinMid = 67144;  // Reverb merchant ID
       const awinAffId = 2579497;  // Your publisher ID
-      const awinBase = `https://www.awin1.com/cread.php?awinmid=${awinMid}&awinaffid=${awinAffId}&ued=https%3A%2F%2Freverb.com%2Fitem%2F`;
+      const awinBase = `https://www.awin1.com/cread.php?awinmid=${encodeURIComponent(awinMid)}&awinaffid=${encodeURIComponent(awinAffId)}&ued=`;
       const grid = document.getElementById('reverb-listings-grid');
 
-      const headers = {
-        'Accept': 'application/hal+json, application/json',
-        'Content-Type': 'application/hal+json',
-        'Accept-Version': '3.0',
-        'Authorization': `Bearer ${token}`
-      };
-
-      // Function to fetch with optional proxy (for CORS during testing)
-      async function fetchWithProxy(url, useProxy = false) {
-        let fetchUrl = url;
-        if (useProxy) {
-          console.log('Using CORS proxy...');
-          fetchUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
-        }
-        return await fetch(fetchUrl, { headers });
-      }
-
       try {
-        console.log('Attempting API fetch with token...', { url: apiUrl });
-        let response = await fetchWithProxy(apiUrl, false);
+        console.log('Attempting proxy fetch...', { url: apiUrl });
+        const response = await fetch(apiUrl);
 
-        // Fallback to proxy if CORS (status 0)
-        if (!response.ok && (response.status === 0 || response.type === 'opaque')) {
-          console.log('Direct fetch failed (CORS). Trying proxy...');
-          response = await fetchWithProxy(apiUrl, true);
-        }
-
-        console.log(`API Response Status: ${response.status} ${response.statusText}`);
+        console.log(`Proxy Response Status: ${response.status} ${response.statusText}`);
 
         if (!response.ok) {
           const errorText = await response.text();
-          console.error(`API error details: Status ${response.status}, Body: ${errorText.substring(0, 200)}...`);
-          throw new Error(`API error: ${response.status} ${response.statusText}`);
+          console.error(`Proxy error details: Status ${response.status}, Body: ${errorText.substring(0, 200)}...`);
+          throw new Error(`Proxy error: ${response.status} ${response.statusText}`);
         }
 
         const data = await response.json();
-        console.log('API Data received:', { total: data.total || data._embedded?.listings?.length, listingsCount: data.listings?.length || data._embedded?.listings?.length });
+        console.log('Proxy Data received:', { total: data.total || data._embedded?.listings?.length, listingsCount: data.listings?.length || data._embedded?.listings?.length });
 
         // Handle HAL-embedded response format
         const listings = data.listings || (data._embedded && data._embedded.listings) || [];
         if (listings.length > 0) {
           const renderedHtml = listings.map(listing => {
-            const affLink = `${awinBase}${listing.id}`;
+            const affLink = `${awinBase}${encodeURIComponent(`https://reverb.com/item/${listing.id}`)}`;
             console.log('Listing details:', { id: listing.id, title: listing.title, photos: listing.photos || 'No photos available' });
             console.log('Generated Awin link:', affLink);
-            // Try all possible image fields before local fallback
+            // Try all possible image fields before fallbacks
             const imageUrl = listing.photos?.[0]?.medium_url || 
                             listing.photos?.[0]?.full_url || 
                             listing.photos?.[0]?.thumbnail_url || 
                             listing.photos?.[0]?.large_url || 
                             listing.photos?.[0]?.supersize_url || 
-                            '/_img/narwhal.jpg' || // Local fallback (host on narwhalindustries.net)
-                            'https://placehold.co/200x150?text=Narwhal+Pedal';
+                            '/_img/narwhal.jpg' || // Local fallback
+                            'https://placehold.co/200x150?text=Narwhal+Pedal'; // Temporary fallback
             return `
               <div class="reverb-card">
                 <img src="${imageUrl}" alt="${listing.title}" loading="lazy">
@@ -202,7 +178,7 @@
         }
       } catch (error) {
         console.error('Reverb API fetch error:', error);
-        grid.innerHTML = `<p>Couldn't load listings (check console/token). <a href="https://www.awin1.com/cread.php?awinmid=67144&awinaffid=2579497&ued=https%3A%2F%2Freverb.com%2Fmarketplace%3Fquery%3Doverdrive%26product_type%3Deffects-and-pedals%26price_max%3D100%26price_min%3D50">Browse overdrive pedals on Reverb</a> to find similar gear!</p>`;
+        grid.innerHTML = `<p>Couldn't load listings (check console/proxy). <a href="https://www.awin1.com/cread.php?awinmid=67144&awinaffid=2579497&ued=https%3A%2F%2Freverb.com%2Fmarketplace%3Fquery%3Doverdrive%26product_type%3Deffects-and-pedals%26price_max%3D100%26price_min%3D50">Browse overdrive pedals on Reverb</a> to find similar gear!</p>`;
       }
     }
 
