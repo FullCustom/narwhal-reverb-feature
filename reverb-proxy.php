@@ -4,7 +4,20 @@ ini_set('display_errors', 0); // Disable HTML error display
 ini_set('log_errors', 1);
 ini_set('error_log', __DIR__ . '/php-error.log'); // Log errors to file
 
-$token = '59ff7211ac382205accabbbdf9ff28935b35cb7580b343bf1cebceeaf3e6d47f'; // Move to .env or server config in production
+// Load token from .env file
+$envFile = __DIR__ . '/.env';
+if (!file_exists($envFile)) {
+    error_log(".env file not found");
+    echo json_encode(['error' => '.env file not found']);
+    exit;
+}
+$env = parse_ini_file($envFile);
+$token = $env['REVERB_TOKEN'] ?? null;
+if (!$token) {
+    error_log("REVERB_TOKEN not found in .env");
+    echo json_encode(['error' => 'REVERB_TOKEN not found in .env']);
+    exit;
+}
 
 // Allow CORS for testing (restrict in production)
 header('Access-Control-Allow-Origin: *');
