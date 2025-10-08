@@ -1,7 +1,7 @@
  async function loadReverbListings() {
       const apiUrl = 'http://localhost:8000/reverb-proxy.php'; // PHP built-in server endpoint use relative path
       const awinMid = 67144;  // Reverb merchant ID
-      const awinAffId = 2579497;  // Your publisher ID
+      const awinAffId = 2579497;  // Replace with your publisher ID this one is mine
       const awinBase = `https://www.awin1.com/cread.php?awinmid=${encodeURIComponent(awinMid)}&awinaffid=${encodeURIComponent(awinAffId)}&ued=`;
       const grid = document.getElementById('reverb-listings-grid');
 
