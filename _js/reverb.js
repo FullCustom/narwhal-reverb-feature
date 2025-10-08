@@ -28,13 +28,9 @@
             console.log('Listing details:', { id: listing.id, title: listing.title, photos: listing.photos || 'No photos available' });
             console.log('Generated Awin link:', affLink);
             // Try all possible image fields before fallbacks
-            const imageUrl = listing.photos?.[0]?.medium_url || 
-                            listing.photos?.[0]?.full_url || 
-                            listing.photos?.[0]?.thumbnail_url || 
-                            listing.photos?.[0]?.large_url || 
-                            listing.photos?.[0]?.supersize_url || 
-                            '/_img/narwhal.jpg' || // Local fallback
-                            'https://placehold.co/200x150?text=Narwhal+Pedal'; // Temporary fallback
+            const imageUrl = listing._links?.photo?.href || 
+                 '/_img/narwhal.jpg' || // Local fallback
+                 'https://placehold.co/200x150?text=Narwhal+Pedal'; // Temporary fallback
             return `
               <div class="reverb-card">
                 <img src="${imageUrl}" alt="${listing.title}" loading="lazy">
