@@ -3,3 +3,6 @@
 
 # Ignore log files
 php-error.log
+
+# Ignore cert
+cacert.pem
